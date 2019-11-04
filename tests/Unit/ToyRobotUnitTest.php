@@ -11,11 +11,20 @@ class ToyRobotUnitTest extends TestCase
 
     public function setUp()
     {
+        parent::setUp();
+
         $this->robotCommand = new ToyRobotCommand();
     }
 
-    public function testItNeedsToBePlacedOnTheTableAfterStart()
+    public function testIsPlacedAttributeGetter()
     {
-        $this->assertTrue($this->robotCommand->isPlaced);
+        $this->assertFalse($this->robotCommand->getIsPlaced());
+    }
+
+    public function testIsExitCommandMethod()
+    {
+        $this->assertTrue($this->robotCommand->isExitCommand('EXIT'));
+        $this->assertTrue($this->robotCommand->isExitCommand('QUIT'));
+        $this->assertFalse($this->robotCommand->isExitCommand('STOP'));
     }
 }

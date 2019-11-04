@@ -56,11 +56,25 @@ class ToyRobotCommand extends Command
     ];
 
     /**
-     * If robot is placed on the table or not
+     * Value of coordinate X
      *
-     * @var bool
+     * @var integer
      */
-    private $isPlaced = false;
+    private $coordinateX;
+
+    /**
+     * Value of coordinate Y
+     *
+     * @var integer
+     */
+    private $coordinateY;
+
+    /**
+     * Value of direction, any of the cardinal points
+     *
+     * @var integer
+     */
+    private $direction;
 
     /**
      * Create a new command instance.
@@ -79,6 +93,34 @@ class ToyRobotCommand extends Command
      */
     public function handle()
     {
-        //
+        while (!feof(STDIN)) {
+            $input = rtrim(trim(fgets(STDIN)));
+            if ($this->isExitCommand($input)) {
+                $this->info('Closing robot simulator. Bye!');
+                die(0);
+            }
+        }
+    }
+
+    /**
+     * Determine if robot is placed on the table or not
+     *
+     * @return bool
+     */
+    public function getIsPlaced()
+    {
+        return isset($this->coordinateX, $this->coordinateY, $this->direction);
+    }
+
+    /**
+     * Determine if received command is for exit
+     *
+     * @param string $input
+     *
+     * @return bool
+     */
+    public function isExitCommand($input)
+    {
+        return in_array($input, $this->validExitCommands);
     }
 }
