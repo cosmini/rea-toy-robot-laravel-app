@@ -123,4 +123,17 @@ class ToyRobotCommand extends Command
     {
         return in_array($input, $this->validExitCommands);
     }
+
+
+    /**
+     * Determine if a command is valid
+     *
+     * @param string $input
+     *
+     * @return bool
+     */
+    public function isValidRobotCommand($input)
+    {
+        return preg_match('/^(PLACE [0-5],[0-5],(EAST|WEST|NORTH|SOUTH)|MOVE|LEFT|RIGHT|REPORT)$/', $input) === 1;
+    }
 }
