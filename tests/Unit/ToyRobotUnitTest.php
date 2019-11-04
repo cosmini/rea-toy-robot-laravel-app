@@ -64,6 +64,7 @@ class ToyRobotUnitTest extends TestCase
 
     /**
      * @covers App\Console\Commands\ToyRobotCommand::turnRobot
+     * @using App\Console\Commands\ToyRobotCommand::engageCommand
      */
     public function testItCanTurnLeft()
     {
@@ -82,6 +83,7 @@ class ToyRobotUnitTest extends TestCase
 
     /**
      * @covers App\Console\Commands\ToyRobotCommand::turnRobot
+     * @using App\Console\Commands\ToyRobotCommand::engageCommand
      */
     public function testItCanTurnRight()
     {
@@ -99,14 +101,64 @@ class ToyRobotUnitTest extends TestCase
     }
 
     /**
-     * @covers App\Console\Commands\ToyRobotCommand::engageCommand
+     * @covers App\Console\Commands\ToyRobotCommand::moveRobot
+     * @using App\Console\Commands\ToyRobotCommand::engageCommand
      */
-    public function testItCanMoveRobot()
+    public function testItCanMoveRobotIfInsideTableBoundaries()
     {
-        // init place on the table
         $this->robotCommand->engageCommand('PLACE 0,0,EAST');
+        $this->assertTrue($this->robotCommand->moveRobot());
 
-        // move robot and test output
-        $this->assertTrue($this->robotCommand->engageCommand('MOVE'));
+        $this->robotCommand->engageCommand('PLACE 0,0,NORTH');
+        $this->assertTrue($this->robotCommand->moveRobot());
+
+        $this->robotCommand->engageCommand('PLACE 0,4,EAST');
+        $this->assertTrue($this->robotCommand->moveRobot());
+
+        $this->robotCommand->engageCommand('PLACE 0,4,SOUTH');
+        $this->assertTrue($this->robotCommand->moveRobot());
+
+        $this->robotCommand->engageCommand('PLACE 4,0,WEST');
+        $this->assertTrue($this->robotCommand->moveRobot());
+
+        $this->robotCommand->engageCommand('PLACE 4,0,NORTH');
+        $this->assertTrue($this->robotCommand->moveRobot());
+
+        $this->robotCommand->engageCommand('PLACE 4,4,WEST');
+        $this->assertTrue($this->robotCommand->moveRobot());
+
+        $this->robotCommand->engageCommand('PLACE 4,4,SOUTH');
+        $this->assertTrue($this->robotCommand->moveRobot());
+    }
+
+    /**
+     * @covers App\Console\Commands\ToyRobotCommand::moveRobot
+     * @using App\Console\Commands\ToyRobotCommand::moveRobot
+     */
+    public function testItCannotMoveRobotIfOutsideTableBoundaries()
+    {
+        $this->robotCommand->engageCommand('PLACE 0,0,WEST');
+        $this->assertFalse($this->robotCommand->moveRobot());
+
+        $this->robotCommand->engageCommand('PLACE 0,0,SOUTH');
+        $this->assertFalse($this->robotCommand->moveRobot());
+
+        $this->robotCommand->engageCommand('PLACE 0,4,WEST');
+        $this->assertFalse($this->robotCommand->moveRobot());
+
+        $this->robotCommand->engageCommand('PLACE 0,4,NORTH');
+        $this->assertFalse($this->robotCommand->moveRobot());
+
+        $this->robotCommand->engageCommand('PLACE 4,0,EAST');
+        $this->assertFalse($this->robotCommand->moveRobot());
+
+        $this->robotCommand->engageCommand('PLACE 4,0,SOUTH');
+        $this->assertFalse($this->robotCommand->moveRobot());
+
+        $this->robotCommand->engageCommand('PLACE 4,4,EAST');
+        $this->assertFalse($this->robotCommand->moveRobot());
+
+        $this->robotCommand->engageCommand('PLACE 4,4,NORTH');
+        $this->assertFalse($this->robotCommand->moveRobot());
     }
 }

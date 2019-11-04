@@ -92,14 +92,8 @@ class ToyRobotCommand extends Command
                 continue;
             }
 
-            if (!$this->isRobotPlacedOnTable()) {
-                $this->info('To start the simulator place the robot on the table using PLACE X,Y,FACING');
-                $this->info('Example: PLACE 2,3,EAST');
-                continue;
-            }
-
             if (!$this->engageCommand($input)) {
-                $this->warn('Command ignored.');
+                continue;
             }
         }
     }
@@ -136,7 +130,7 @@ class ToyRobotCommand extends Command
      */
     public function isValidRobotCommand($input)
     {
-        return preg_match('/^(PLACE [0-5],[0-5],(EAST|WEST|NORTH|SOUTH)|MOVE|LEFT|RIGHT|REPORT)$/', $input) === 1;
+        return preg_match('/^(PLACE [0-4],[0-4],(EAST|WEST|NORTH|SOUTH)|MOVE|LEFT|RIGHT|REPORT)$/', $input) === 1;
     }
 
     /**
@@ -163,6 +157,48 @@ class ToyRobotCommand extends Command
     }
 
     /**
+     * Determine if a move will be within the table boundaries and move the robot
+     *
+     * @return bool
+     */
+    public function moveRobot()
+    {
+        $success = false;
+
+        switch ($this->direction) {
+            case 'EAST':
+                if ($this->coordinateX + 1 < 5) {
+                    $this->coordinateX += 1;
+                    $success = true;
+                }
+                break;
+
+            case 'NORTH':
+                if ($this->coordinateY + 1 < 5) {
+                    $this->coordinateY += 1;
+                    $success = true;
+                }
+                break;
+
+            case 'WEST':
+                if ($this->coordinateX - 1 >= 0) {
+                    $this->coordinateX -= 1;
+                    $success = true;
+                }
+                break;
+
+            case 'SOUTH':
+                if ($this->coordinateY - 1 >= 0) {
+                    $this->coordinateY -= 1;
+                    $success = true;
+                }
+                break;
+        }
+
+        return $success;
+    }
+
+    /**
      * Take action from command
      *
      * @param string $input
@@ -184,17 +220,17 @@ class ToyRobotCommand extends Command
                 $success = true;
                 break;
 
-            case $input === 'MOVE':
-                // TODO: implement move command including validation to stay on the table
+            case $input === 'MOVE' && $this->isRobotPlacedOnTable():
+                $success = $this->moveRobot();
                 break;
 
-            case $input === 'LEFT':
-            case $input === 'RIGHT':
+            case $input === 'LEFT' && $this->isRobotPlacedOnTable():
+            case $input === 'RIGHT' && $this->isRobotPlacedOnTable():
                 $this->direction = $this->turnRobot($input);
                 $success = true;
                 break;
 
-            case $input === 'REPORT':
+            case $input === 'REPORT' && $this->isRobotPlacedOnTable():
                 $this->info(
                     implode(',', [
                         $this->coordinateX,
