@@ -17,11 +17,11 @@ class ToyRobotUnitTest extends TestCase
     }
 
     /**
-     * @covers App\Console\Commands\ToyRobotCommand::getIsPlaced
+     * @covers App\Console\Commands\ToyRobotCommand::isRobotPlacedOnTable
      */
-    public function testIsPlacedAttributeGetter()
+    public function testIsRobotPlacedOnTableMethodReturnsFalseOnInit()
     {
-        $this->assertFalse($this->robotCommand->getIsPlaced());
+        $this->assertFalse($this->robotCommand->isRobotPlacedOnTable());
     }
 
     /**
@@ -41,9 +41,9 @@ class ToyRobotUnitTest extends TestCase
     {
         $this->assertFalse($this->robotCommand->isValidRobotCommand(''));
 
-        $this->assertFalse($this->robotCommand->isValidRobotCommand('PLACE 0,0,SOUTH'));
+        $this->assertFalse($this->robotCommand->isValidRobotCommand('PLACE 6,6,FOO'));
 
-        $this->assertTrue($this->robotCommand->isValidRobotCommand('PLACE 6,6,FOO'));
+        $this->assertTrue($this->robotCommand->isValidRobotCommand('PLACE 0,0,SOUTH'));
 
         $this->assertTrue($this->robotCommand->isValidRobotCommand('MOVE'));
 
@@ -52,5 +52,61 @@ class ToyRobotUnitTest extends TestCase
         $this->assertTrue($this->robotCommand->isValidRobotCommand('RIGHT'));
 
         $this->assertTrue($this->robotCommand->isValidRobotCommand('REPORT'));
+    }
+
+    /**
+     * @covers App\Console\Commands\ToyRobotCommand::engageCommand
+     */
+    public function testItCanPlaceRobotOnTheTable()
+    {
+        $this->assertTrue($this->robotCommand->engageCommand('PLACE 0,0,EAST'));
+    }
+
+    /**
+     * @covers App\Console\Commands\ToyRobotCommand::turnRobot
+     */
+    public function testItCanTurnLeft()
+    {
+        $this->robotCommand->engageCommand('PLACE 0,0,EAST');
+        $this->assertEquals('NORTH', $this->robotCommand->turnRobot('LEFT'));
+
+        $this->robotCommand->engageCommand('PLACE 0,0,NORTH');
+        $this->assertEquals('WEST', $this->robotCommand->turnRobot('LEFT'));
+
+        $this->robotCommand->engageCommand('PLACE 0,0,WEST');
+        $this->assertEquals('SOUTH', $this->robotCommand->turnRobot('LEFT'));
+
+        $this->robotCommand->engageCommand('PLACE 0,0,SOUTH');
+        $this->assertEquals('EAST', $this->robotCommand->turnRobot('LEFT'));
+    }
+
+    /**
+     * @covers App\Console\Commands\ToyRobotCommand::turnRobot
+     */
+    public function testItCanTurnRight()
+    {
+        $this->robotCommand->engageCommand('PLACE 0,0,EAST');
+        $this->assertEquals('SOUTH', $this->robotCommand->turnRobot('RIGHT'));
+
+        $this->robotCommand->engageCommand('PLACE 0,0,SOUTH');
+        $this->assertEquals('WEST', $this->robotCommand->turnRobot('RIGHT'));
+
+        $this->robotCommand->engageCommand('PLACE 0,0,WEST');
+        $this->assertEquals('NORTH', $this->robotCommand->turnRobot('RIGHT'));
+
+        $this->robotCommand->engageCommand('PLACE 0,0,NORTH');
+        $this->assertEquals('EAST', $this->robotCommand->turnRobot('RIGHT'));
+    }
+
+    /**
+     * @covers App\Console\Commands\ToyRobotCommand::engageCommand
+     */
+    public function testItCanMoveRobot()
+    {
+        // init place on the table
+        $this->robotCommand->engageCommand('PLACE 0,0,EAST');
+
+        // move robot and test output
+        $this->assertTrue($this->robotCommand->engageCommand('MOVE'));
     }
 }
