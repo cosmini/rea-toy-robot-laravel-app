@@ -41,11 +41,16 @@ class ToyRobotUnitTest extends TestCase
     {
         $this->assertFalse($this->robotCommand->isValidRobotCommand(''));
 
-        $this->assertTrue($this->robotCommand->isValidRobotCommand('PLACE 0,0,SOUTH'));
+        $this->assertFalse($this->robotCommand->isValidRobotCommand('PLACE 0,0,SOUTH'));
+
+        $this->assertTrue($this->robotCommand->isValidRobotCommand('PLACE 6,6,FOO'));
 
         $this->assertTrue($this->robotCommand->isValidRobotCommand('MOVE'));
+
         $this->assertTrue($this->robotCommand->isValidRobotCommand('LEFT'));
+
         $this->assertTrue($this->robotCommand->isValidRobotCommand('RIGHT'));
+
         $this->assertTrue($this->robotCommand->isValidRobotCommand('REPORT'));
     }
 }
