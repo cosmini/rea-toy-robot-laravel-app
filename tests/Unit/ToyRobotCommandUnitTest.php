@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use App\Console\Commands\ToyRobotCommand;
 use Tests\TestCase;
 
-class ToyRobotUnitTest extends TestCase
+class ToyRobotCommandUnitTest extends TestCase
 {
     private $robotCommand;
 
@@ -14,6 +14,13 @@ class ToyRobotUnitTest extends TestCase
         parent::setUp();
 
         $this->robotCommand = new ToyRobotCommand();
+    }
+
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        $this->robotCommand = null;
     }
 
     /**
