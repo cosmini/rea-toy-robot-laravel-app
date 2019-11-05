@@ -26,7 +26,7 @@ class ToyRobotCommandUnitTest extends TestCase
     /**
      * @covers App\Console\Commands\ToyRobotCommand::isRobotPlacedOnTable
      */
-    public function testIsRobotPlacedOnTableMethodReturnsFalseOnInit()
+    public function testItNeedsToBePlacedOnTableAtStart()
     {
         $this->assertFalse($this->robotCommand->isRobotPlacedOnTable());
     }
@@ -34,7 +34,7 @@ class ToyRobotCommandUnitTest extends TestCase
     /**
      * @covers App\Console\Commands\ToyRobotCommand::isExitCommand
      */
-    public function testIsExitCommandMethod()
+    public function testItCanStopSimulatorIfExitCommandReceived()
     {
         $this->assertTrue($this->robotCommand->isExitCommand('EXIT'));
         $this->assertTrue($this->robotCommand->isExitCommand('QUIT'));
@@ -67,6 +67,14 @@ class ToyRobotCommandUnitTest extends TestCase
     public function testItCanPlaceRobotOnTheTable()
     {
         $this->assertTrue($this->robotCommand->engageCommand('PLACE 0,0,EAST'));
+    }
+
+    /**
+     * @covers App\Console\Commands\ToyRobotCommand::engageCommand
+     */
+    public function testItCannotPlaceRobotOutsideTheTable()
+    {
+        $this->assertTrue($this->robotCommand->engageCommand('PLACE 6,6,EAST'));
     }
 
     /**
