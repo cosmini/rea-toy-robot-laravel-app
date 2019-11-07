@@ -18,7 +18,22 @@ class ToyRobotCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Start simulation of a toy robot moving on a square tabletop. Valid input commands are PLACE X,Y,F; MOVE; LEFT, RIGHT, REPORT.';
+    protected $description = 'Start toy robot simulation';
+
+
+    /**
+     * Table dimension (units) on axis X
+     *
+     * @var integer
+     */
+    private $unitsAxisX;
+
+    /**
+     * Table dimension (units) on axis Y
+     *
+     * @var integer
+     */
+    private $unitsAxisY;
 
     /**
      * The mapping of cardinal points and their value
@@ -71,6 +86,9 @@ class ToyRobotCommand extends Command
     public function __construct()
     {
         parent::__construct();
+
+        $this->unitsAxisX = env('TOY_ROBOT_UNITS_AXIS_X', 5);
+        $this->unitsAxisY = env('TOY_ROBOT_UNITS_AXIS_Y', 5);
     }
 
     /**
@@ -130,7 +148,7 @@ class ToyRobotCommand extends Command
      */
     public function isValidRobotCommand($input)
     {
-        return preg_match('/^(PLACE [0-4],[0-4],(EAST|WEST|NORTH|SOUTH)|MOVE|LEFT|RIGHT|REPORT)$/', $input) === 1;
+        return preg_match("/^(PLACE [0-{$this->unitsAxisX}],[0-{$this->unitsAxisX}],(EAST|WEST|NORTH|SOUTH)|MOVE|LEFT|RIGHT|REPORT)$/", $input) === 1;
     }
 
     /**
@@ -167,14 +185,14 @@ class ToyRobotCommand extends Command
 
         switch ($this->direction) {
             case 'EAST':
-                if ($this->coordinateX + 1 < 5) {
+                if ($this->coordinateX + 1 < $this->unitsAxisX) {
                     $this->coordinateX += 1;
                     $success = true;
                 }
                 break;
 
             case 'NORTH':
-                if ($this->coordinateY + 1 < 5) {
+                if ($this->coordinateY + 1 < $this->unitsAxisY) {
                     $this->coordinateY += 1;
                     $success = true;
                 }
