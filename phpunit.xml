@@ -29,5 +29,7 @@
         <env name="MAIL_DRIVER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
+        <env name="TOY_ROBOT_UNITS_AXIS_X" value="5"/>
+        <env name="TOY_ROBOT_UNITS_AXIS_Y" value="5"/>
     </php>
 </phpunit>

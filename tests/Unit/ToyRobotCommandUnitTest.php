@@ -48,7 +48,15 @@ class ToyRobotCommandUnitTest extends TestCase
     {
         $this->assertFalse($this->robotCommand->isValidRobotCommand(''));
 
-        $this->assertFalse($this->robotCommand->isValidRobotCommand('PLACE 6,6,FOO'));
+        $this->assertFalse(
+            $this->robotCommand->isValidRobotCommand(
+                'PLACE ' . implode(',', [
+                    env('TOY_ROBOT_UNITS_AXIS_X') + 1,
+                    env('TOY_ROBOT_UNITS_AXIS_Y') + 1,
+                    'FOO'
+                ])
+            )
+        );
 
         $this->assertTrue($this->robotCommand->isValidRobotCommand('PLACE 0,0,SOUTH'));
 
@@ -74,7 +82,15 @@ class ToyRobotCommandUnitTest extends TestCase
      */
     public function testItCannotPlaceRobotOutsideTheTable()
     {
-        $this->assertTrue($this->robotCommand->engageCommand('PLACE 6,6,EAST'));
+        $this->assertTrue(
+            $this->robotCommand->engageCommand(
+                'PLACE ' . implode(',', [
+                    env('TOY_ROBOT_UNITS_AXIS_X') + 1,
+                    env('TOY_ROBOT_UNITS_AXIS_Y') + 1,
+                    'EAST'
+                ])
+            )
+        );
     }
 
     /**
@@ -127,22 +143,22 @@ class ToyRobotCommandUnitTest extends TestCase
         $this->robotCommand->engageCommand('PLACE 0,0,NORTH');
         $this->assertTrue($this->robotCommand->moveRobot());
 
-        $this->robotCommand->engageCommand('PLACE 0,4,EAST');
+        $this->robotCommand->engageCommand('PLACE 0,' . env('TOY_ROBOT_UNITS_AXIS_Y') . ',EAST');
         $this->assertTrue($this->robotCommand->moveRobot());
 
-        $this->robotCommand->engageCommand('PLACE 0,4,SOUTH');
+        $this->robotCommand->engageCommand('PLACE 0,' . env('TOY_ROBOT_UNITS_AXIS_Y') . ',SOUTH');
         $this->assertTrue($this->robotCommand->moveRobot());
 
-        $this->robotCommand->engageCommand('PLACE 4,0,WEST');
+        $this->robotCommand->engageCommand('PLACE ' . env('TOY_ROBOT_UNITS_AXIS_X') . ',0,WEST');
         $this->assertTrue($this->robotCommand->moveRobot());
 
-        $this->robotCommand->engageCommand('PLACE 4,0,NORTH');
+        $this->robotCommand->engageCommand('PLACE ' . env('TOY_ROBOT_UNITS_AXIS_X') . ',0,NORTH');
         $this->assertTrue($this->robotCommand->moveRobot());
 
-        $this->robotCommand->engageCommand('PLACE 4,4,WEST');
+        $this->robotCommand->engageCommand('PLACE ' . env('TOY_ROBOT_UNITS_AXIS_X') . ',' . env('TOY_ROBOT_UNITS_AXIS_Y') . ',WEST');
         $this->assertTrue($this->robotCommand->moveRobot());
 
-        $this->robotCommand->engageCommand('PLACE 4,4,SOUTH');
+        $this->robotCommand->engageCommand('PLACE ' . env('TOY_ROBOT_UNITS_AXIS_X') . ',' . env('TOY_ROBOT_UNITS_AXIS_Y') . ',SOUTH');
         $this->assertTrue($this->robotCommand->moveRobot());
     }
 
@@ -158,22 +174,22 @@ class ToyRobotCommandUnitTest extends TestCase
         $this->robotCommand->engageCommand('PLACE 0,0,SOUTH');
         $this->assertFalse($this->robotCommand->moveRobot());
 
-        $this->robotCommand->engageCommand('PLACE 0,4,WEST');
+        $this->robotCommand->engageCommand('PLACE 0,' . env('TOY_ROBOT_UNITS_AXIS_Y') . ',WEST');
         $this->assertFalse($this->robotCommand->moveRobot());
 
-        $this->robotCommand->engageCommand('PLACE 0,4,NORTH');
+        $this->robotCommand->engageCommand('PLACE 0,' . env('TOY_ROBOT_UNITS_AXIS_Y') . ',NORTH');
         $this->assertFalse($this->robotCommand->moveRobot());
 
-        $this->robotCommand->engageCommand('PLACE 4,0,EAST');
+        $this->robotCommand->engageCommand('PLACE ' . env('TOY_ROBOT_UNITS_AXIS_X') . ',0,EAST');
         $this->assertFalse($this->robotCommand->moveRobot());
 
-        $this->robotCommand->engageCommand('PLACE 4,0,SOUTH');
+        $this->robotCommand->engageCommand('PLACE ' . env('TOY_ROBOT_UNITS_AXIS_X') . ',0,SOUTH');
         $this->assertFalse($this->robotCommand->moveRobot());
 
-        $this->robotCommand->engageCommand('PLACE 4,4,EAST');
+        $this->robotCommand->engageCommand('PLACE ' . env('TOY_ROBOT_UNITS_AXIS_X') . ',' . env('TOY_ROBOT_UNITS_AXIS_Y') . ',EAST');
         $this->assertFalse($this->robotCommand->moveRobot());
 
-        $this->robotCommand->engageCommand('PLACE 4,4,NORTH');
+        $this->robotCommand->engageCommand('PLACE ' . env('TOY_ROBOT_UNITS_AXIS_X') . ',' . env('TOY_ROBOT_UNITS_AXIS_Y') . ',NORTH');
         $this->assertFalse($this->robotCommand->moveRobot());
     }
 }
