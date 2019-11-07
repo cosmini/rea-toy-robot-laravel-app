@@ -98,22 +98,33 @@ class ToyRobotCommand extends Command
      */
     public function handle()
     {
-        while (!feof(STDIN)) {
-            $input = rtrim(trim(fgets(STDIN)));
-            if ($this->isExitCommand($input)) {
-                $this->info('Closing robot simulator. Bye!');
-                break;
-            }
+        $this->info('<fg=red;bg=white>Robot simulator ready.');
+        $this->info('<fg=red;bg=white>To start place robot on a table size ' . $this->unitsAxisX . ' by ' . $this->unitsAxisY);
+        $this->info('<fg=black;bg=white>Example: PLACE 0,0,NORTH');
+        $this->info('');
+
+        do {
+            $input = readline();
 
             if (!$this->isValidRobotCommand($input)) {
-                $this->warn('Invalid command. Allowed options are: PLACE, MOVE, LEFT, RIGHT and REPORT');
+                $this->warn("Invalid command. Allowed options are:");
+                $this->warn(" * PLACE 0-{$this->unitsAxisX},0-{$this->unitsAxisY}," . implode('|', array_keys($this->cardinalPoints)));
+                $this->warn(" * MOVE");
+                $this->warn(" * LEFT");
+                $this->warn(" * RIGHT");
+                $this->warn(" * REPORT");
+                foreach ($this->validExitCommands as $command) {
+                    $this->warn(" * $command");
+                }
                 continue;
             }
 
             if (!$this->engageCommand($input)) {
                 continue;
             }
-        }
+        } while (!$this->isExitCommand($input));
+
+        $this->info('<fg=red;bg=white>Closing robot simulator. Bye!');
     }
 
     /**
@@ -148,7 +159,20 @@ class ToyRobotCommand extends Command
      */
     public function isValidRobotCommand($input)
     {
-        return preg_match("/^(PLACE [0-{$this->unitsAxisX}],[0-{$this->unitsAxisX}],(EAST|WEST|NORTH|SOUTH)|MOVE|LEFT|RIGHT|REPORT)$/", $input) === 1;
+        $regex = "/^";
+        $regex .= "(PLACE [0-{$this->unitsAxisX}],[0-{$this->unitsAxisX}],(" . implode('|', array_keys($this->cardinalPoints)) . ")|";
+        $regex .= implode(
+            '|',
+            array_merge(
+                [
+                    'MOVE', 'LEFT', 'RIGHT', 'REPORT'
+                ],
+                $this->validExitCommands
+            )
+        );
+        $regex .= ")$/";
+
+        return preg_match($regex, $input) === 1;
     }
 
     /**
@@ -185,14 +209,14 @@ class ToyRobotCommand extends Command
 
         switch ($this->direction) {
             case 'EAST':
-                if ($this->coordinateX + 1 < $this->unitsAxisX) {
+                if ($this->coordinateX + 1 <= $this->unitsAxisX) {
                     $this->coordinateX += 1;
                     $success = true;
                 }
                 break;
 
             case 'NORTH':
-                if ($this->coordinateY + 1 < $this->unitsAxisY) {
+                if ($this->coordinateY + 1 <= $this->unitsAxisY) {
                     $this->coordinateY += 1;
                     $success = true;
                 }
