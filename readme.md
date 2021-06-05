@@ -7,13 +7,13 @@ Toy robot accepts the following commands:
 
 -   `PLACE`
     -   will place robot on the table
-    -   receives location on x axis (horizonal), y axis (vertical) and cardinal direction
+    -   receives location on x axis (horizontal), y axis (vertical) and cardinal direction
     -   robot should be placed on the table to start
     -   same command can be used to replace the position once is on the table
     -   example: `PLACE 2,3,NORTH`
 -   `MOVE`
     -   move robot by one unit in the current direction
-    -   command is being ignored if next step is outsite table boundaries
+    -   command is being ignored if next step is outside table boundaries
 -   `LEFT`
     -   turns robot 90 degrees to left
 -   `RIGHT`
@@ -26,7 +26,7 @@ Toy robot accepts the following commands:
 
 Application has been built using [Laravel framework version 5.7](https://laravel.com/docs/5.7) because I'm familiar with it and I wanted to learn more about console commands.
 
-This way I was able to custome the style of the command and replicate the REA brand colors.
+This way I was able to customise the style of the command and replicate the REA brand colors.
 
 ## Requirements
 
